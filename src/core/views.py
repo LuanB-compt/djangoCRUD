@@ -68,5 +68,14 @@ def update(request, id: int):
 
 
 @csrf_exempt
-def delete(request):
-    pass
+def delete(request, id: int):
+    if request.method != "DELETE":
+        return HttpResponse(
+            JsonResponse(data={'msg':'error'}),
+            status=500
+        )
+    Employee.objects.get(id=id).delete()
+    return HttpResponse(
+        JsonResponse(data={'Employees':list(Employee.objects.all().values())}),
+        status=200
+    )
