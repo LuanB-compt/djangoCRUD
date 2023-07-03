@@ -6,8 +6,10 @@ from .models import Employee
 import json
 
 
+
 def home(request):
     return render(request=request, template_name='index.html')
+
 
 @csrf_exempt
 def create(request):
@@ -29,6 +31,8 @@ def create(request):
         status=200
     )
 
+
+@csrf_exempt
 def read(request):
     if request.method != "GET":
         return HttpResponse(
@@ -40,9 +44,29 @@ def read(request):
         status=200
     )
 
-def update(request):
-    if request.method != "PUT":
-        pass
 
+@csrf_exempt
+def update(request, id: int):
+    if request.method != "PUT":
+        return HttpResponse(
+            JsonResponse(data={'msg':'error'}),
+            status=500
+        )
+    request_json = json.loads(request.body.decode("utf-8"))
+    fields = [field.name for field in Employee._meta.get_fields()]
+    employee = Employee.objects.get(id=id)
+    employee.name = request_json['name']
+    employee.age = request_json['age']
+    employee.cellphone = request_json['cellphone']
+    employee.position = request_json['position']
+    employee.salary = request_json['salary']
+    employee.save()
+    return HttpResponse(
+        JsonResponse(data={'msg':''}),
+        status=200
+    )
+
+
+@csrf_exempt
 def delete(request):
     pass
