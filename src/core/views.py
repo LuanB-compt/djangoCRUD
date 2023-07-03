@@ -11,8 +11,11 @@ def home(request):
 
 @csrf_exempt
 def create(request):
-    if request.method!="POST":
-        return HttpResponse(JsonResponse(data={'msg':'não recebido'}), status=500)
+    if request.method != "POST":
+        return HttpResponse(
+            JsonResponse(data={'msg':'não recebido'}),
+            status=500
+        )
     request_json = json.loads(request.body.decode("utf-8"))
     Employee.objects.create(
         name=request_json['name'],
@@ -21,13 +24,25 @@ def create(request):
         position=request_json['position'],
         salary=request_json['salary']    
     )
-    return HttpResponse(JsonResponse(data={'msg':'recebido'}), status=200)
+    return HttpResponse(
+        JsonResponse(data={'msg':'recebido'}),
+        status=200
+    )
 
 def read(request):
-    pass
+    if request.method != "GET":
+        return HttpResponse(
+            JsonResponse(data={'msg':'error'}),
+            status=500
+        )
+    return HttpResponse(
+        JsonResponse(data={'Employees':list(Employee.objects.all().values())}),
+        status=200
+    )
 
 def update(request):
-    pass
+    if request.method != "PUT":
+        pass
 
 def delete(request):
     pass
